@@ -132,29 +132,37 @@ def main_tabu():
 
     # 3) while not all restarts done
     i = 0
+
+    greedy_solution = greedy_algorithm()
+    if len(reference_set) > 1:
+            reference_set = restart(reference_set, greedy_solution)
     while i < 5:
         # replace the worst solution from reference_set by greedy solution
-        greedy_solution = greedy_algorithm()
-        if len(reference_set) > 1:
-            reference_set = restart(reference_set, greedy_solution)
+        #greedy_solution = greedy_algorithm()
+        #if len(reference_set) > 1:
+           # reference_set = restart(reference_set, greedy_solution)
         
         reference_set = sorted(reference_set, key=lambda x: len(x), reverse=True)
         best_solution = reference_set[0]
+        print("reference_set after sorting ", reference_set)
 
         # 4)
         # 12, 13)
         is_inserted = False
         olis = sorted(lmers, key=lambda lmer: lmers[lmer])
+        print("\nbest_solution before extending/deleting: ", best_solution)
         for oli in olis:
             is_inserted = extend_move_insert(oli)
+            print("I checked addition for ", oli, " and it is ", is_inserted)
             if is_inserted:
                 lmers[oli] += 1
                 print("counter + ", oli)
+                print("best_solution after adding: ", best_solution)
                 break
 
         if not is_inserted:
             fragment = best_solution[len(best_solution)-K:]
-            print("\nbest_solution before delete: ", best_solution)
+            
             if fragment in lmers:
                 if lmers[fragment] > 0:
                     lmers[fragment] -= 1
@@ -164,6 +172,7 @@ def main_tabu():
 
         print("LMERS: ", lmers)
         reference_set[0] = best_solution
+        print("reference_set[0] ", reference_set[0])
         olis = sorted(lmers, key=lambda lmer: lmers[lmer])
         i += 1
        
